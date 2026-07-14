@@ -2,9 +2,11 @@ import logging
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
 from contextlib import asynccontextmanager
 import asyncio
 import httpx
+import traceback
 from datetime import datetime, timedelta, timezone
 
 logger = logging.getLogger(__name__)
@@ -146,15 +148,28 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS middleware
+# CORS middleware with explicit origins + regex for Render
+origins = settings.BACKEND_CORS_ORIGINS + [
+    "https://quanlichitieu-2-i20i.onrender.com",
+]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.BACKEND_CORS_ORIGINS,
-    allow_origin_regex=r"https://.*\.onrender\.com",
+    allow_origins=origins,
+    allow_origin_regex=r"^https://.*\.onrender\.com$",
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allow_headers=["Authorization", "Content-Type", "Accept", "Idempotency-Key"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
+# Global exception handler: catch all unhandled errors so CORS headers are added to error responses
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.exception("Unhandled exception: %s", exc)
+    detail = str(exc) if settings.ENVIRONMENT != "production" else "Internal Server Error"
+    return JSONResponse(
+        status_code=500,
+        content={"detail": detail},
+    )
 
 # Request logging middleware
 @app.middleware("http")
