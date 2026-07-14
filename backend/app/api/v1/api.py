@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Request
 import httpx
+from app.api.v1.endpoints import auth, transactions, budgets, reports, ws, recurring
 
 api_router = APIRouter()
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
