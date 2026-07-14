@@ -42,7 +42,7 @@ const routes = [
     name: 'YearlySummary',
     component: () => import('../views/YearlySummary.vue'),
   },
-  { path: '/:pathMatch(.*)*', name: 'NotFound', redirect: '/dashboard' },
+  { path: '/:pathMatch(.*)*', name: 'NotFound', redirect: '/' },
 ];
 
 const router = createRouter({
