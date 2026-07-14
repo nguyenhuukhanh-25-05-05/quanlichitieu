@@ -72,27 +72,25 @@ class TransactionService:
             budget_repository.update(db, db_obj=budget, obj_in={"current_spend": new_spend})
 
             # Check threshold
-            if new_spend >= budget.amount_limit:
-                # Exceeded
+            limit_float = float(budget.amount_limit)
+            if new_spend >= limit_float:
                 alert_msg = {
                     "type": "BUDGET_ALERT",
                     "level": "CRITICAL",
                     "category": category,
-                    "limit": budget.amount_limit,
+                    "limit": float(budget.amount_limit),
                     "current": new_spend,
-                    "message": f"Nguy cấp! Bạn đã chi tiêu {new_spend:,.0f} / {budget.amount_limit:,.0f} VND vượt hạn mức chi tiêu cho '{category}'!"
+                    "message": f"Nguy cấp! Bạn đã chi tiêu {new_spend:,.0f} / {limit_float:,.0f} VND vượt hạn mức chi tiêu cho '{category}'!"
                 }
-                # Use asyncio.create_task to run async WebSocket notification without blocking DB flow
                 asyncio.create_task(socket_manager.send_personal_message(alert_msg, user_id))
-            elif new_spend >= budget.amount_limit * 0.8:
-                # Warning 80%
+            elif new_spend >= limit_float * 0.8:
                 alert_msg = {
                     "type": "BUDGET_ALERT",
                     "level": "WARNING",
                     "category": category,
-                    "limit": budget.amount_limit,
+                    "limit": float(budget.amount_limit),
                     "current": new_spend,
-                    "message": f"Cảnh báo: Bạn đã chi tiêu chạm mức 80% hạn mức danh mục '{category}' ({new_spend:,.0f} / {budget.amount_limit:,.0f} VND)!"
+                    "message": f"Cảnh báo: Bạn đã chi tiêu chạm mức 80% hạn mức danh mục '{category}' ({new_spend:,.0f} / {limit_float:,.0f} VND)!"
                 }
                 asyncio.create_task(socket_manager.send_personal_message(alert_msg, user_id))
 
