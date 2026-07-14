@@ -427,11 +427,8 @@ const fetchWeather = async () => {
       (pos) => doFetch(pos.coords.latitude, pos.coords.longitude),
       async () => {
         try {
-          const ipapiUrl = import.meta.env.VITE_IPAPI_URL || 'https://ip-api.com/json/';
-          const ipRes = await axios.get(ipapiUrl, { timeout: 5000 });
-          const lat = ipRes.data.lat ?? ipRes.data.latitude;
-          const lon = ipRes.data.lon ?? ipRes.data.longitude;
-          await doFetch(lat, lon);
+          const ipRes = await axios.get('/ip-geo', { timeout: 5000 });
+          await doFetch(ipRes.data.lat, ipRes.data.lon);
         } catch {
           const lat = import.meta.env.VITE_DEFAULT_LAT || '10.8231';
           const lng = import.meta.env.VITE_DEFAULT_LNG || '106.6297';

@@ -1,9 +1,10 @@
 import logging
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 import asyncio
+import httpx
 from datetime import datetime, timedelta, timezone
 
 logger = logging.getLogger(__name__)
@@ -145,6 +146,15 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+# CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.BACKEND_CORS_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "Accept", "Idempotency-Key"],
+)
+
 # Request logging middleware
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
@@ -156,15 +166,6 @@ async def log_requests(request: Request, call_next):
         request.method, request.url.path, response.status_code, duration
     )
     return response
-
-# CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.BACKEND_CORS_ORIGINS,
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allow_headers=["Authorization", "Content-Type", "Accept", "Idempotency-Key"],
-)
 
 # Include API Router
 app.include_router(api_router, prefix=settings.API_V1_STR)
@@ -184,3 +185,5 @@ def health_check():
         "version": settings.VERSION,
         "environment": settings.ENVIRONMENT
     }
+
+
