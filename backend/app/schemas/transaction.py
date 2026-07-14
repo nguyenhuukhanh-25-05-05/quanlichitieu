@@ -27,7 +27,7 @@ class TransactionUpdate(BaseModel):
 class TransactionInDBBase(TransactionBase):
     id: int
     user_id: int
-    amount_base: Decimal
+    amount_base: float
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
@@ -37,12 +37,12 @@ class Transaction(TransactionInDBBase):
 
 class CategoryStat(BaseModel):
     category: str
-    total: Decimal
+    total: float
     percentage: float
 
 class FinancialSummary(BaseModel):
-    total_income: Decimal
-    total_expense: Decimal
-    balance: Decimal
+    total_income: float
+    total_expense: float
+    balance: float
     category_expenses: list[CategoryStat]
     category_incomes: list[CategoryStat]

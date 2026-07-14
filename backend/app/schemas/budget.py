@@ -29,7 +29,8 @@ class BudgetUpdate(BaseModel):
 class BudgetInDBBase(BudgetBase):
     id: int
     user_id: int
-    current_spend: Decimal
+    amount_limit: float
+    current_spend: float
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
