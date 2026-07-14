@@ -91,17 +91,18 @@ def get_yearly_summary(
         .all()
     )
 
-    # Tổng hợp theo tháng
+    # Tổng hợp theo tháng (dùng float để tránh Decimal + float)
     monthly = {}
     for m in range(1, 13):
         monthly[m] = {"income": 0.0, "expense": 0.0}
 
     for tx in txs:
         m = tx.date.month
+        val = float(tx.amount_base)
         if tx.type == "income":
-            monthly[m]["income"] += tx.amount_base
+            monthly[m]["income"] += val
         else:
-            monthly[m]["expense"] += tx.amount_base
+            monthly[m]["expense"] += val
 
     monthly_list = [
         {
@@ -114,14 +115,14 @@ def get_yearly_summary(
     ]
 
     # Tổng cả năm
-    total_income = sum(tx.amount_base for tx in txs if tx.type == "income")
-    total_expense = sum(tx.amount_base for tx in txs if tx.type == "expense")
+    total_income = sum(float(tx.amount_base) for tx in txs if tx.type == "income")
+    total_expense = sum(float(tx.amount_base) for tx in txs if tx.type == "expense")
 
     # Top danh mục chi tiêu
     expense_cat: dict[str, float] = {}
     for tx in txs:
         if tx.type == "expense":
-            expense_cat[tx.category] = expense_cat.get(tx.category, 0) + tx.amount_base
+            expense_cat[tx.category] = expense_cat.get(tx.category, 0) + float(tx.amount_base)
     top_expense_categories = sorted(
         [{"category": k, "total": round(v, 2)} for k, v in expense_cat.items()],
         key=lambda x: x["total"], reverse=True
@@ -131,7 +132,7 @@ def get_yearly_summary(
     income_cat: dict[str, float] = {}
     for tx in txs:
         if tx.type == "income":
-            income_cat[tx.category] = income_cat.get(tx.category, 0) + tx.amount_base
+            income_cat[tx.category] = income_cat.get(tx.category, 0) + float(tx.amount_base)
     top_income_categories = sorted(
         [{"category": k, "total": round(v, 2)} for k, v in income_cat.items()],
         key=lambda x: x["total"], reverse=True
