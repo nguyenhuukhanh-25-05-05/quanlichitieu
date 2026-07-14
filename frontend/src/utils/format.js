@@ -1,13 +1,16 @@
 export function formatCurrency(value) {
-  if (value === null || value === undefined || isNaN(value)) return '0';
-  return value.toLocaleString('vi-VN');
+  if (value === null || value === undefined) return '0';
+  const num = Number(value);
+  if (isNaN(num)) return '0';
+  return num.toLocaleString('vi-VN');
 }
 
 export function formatOriginalAmount(value, currency) {
   if (value === null || value === undefined || value === 0) return '';
+  const num = Math.abs(Number(value));
+  if (isNaN(num)) return '';
   const cur = currency || 'VND';
-  const formatted = Math.abs(value).toLocaleString('vi-VN');
-  return `${formatted} ${cur}`;
+  return `${num.toLocaleString('vi-VN')} ${cur}`;
 }
 
 export function formatDate(dateStr) {
@@ -20,8 +23,10 @@ export function formatDate(dateStr) {
 }
 
 export function formatNumberWithDots(value) {
-  if (value === null || value === undefined || isNaN(value)) return '0';
-  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  if (value === null || value === undefined) return '0';
+  const num = Number(value);
+  if (isNaN(num)) return '0';
+  return Math.floor(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
 export function formatTime(dateStr) {
