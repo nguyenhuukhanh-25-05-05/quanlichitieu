@@ -15,21 +15,16 @@ class Settings:
     DATABASE_URL: str = os.getenv("DATABASE_URL", "")
     
     # CORS
-    BACKEND_CORS_ORIGINS: list[str] = [
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:5174",
-        "http://127.0.0.1:5174",
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ]
-    
-    _additional_origins = os.getenv("BACKEND_CORS_ORIGINS")
-    if _additional_origins:
-        for _origin in _additional_origins.split(","):
-            _cleaned = _origin.strip()
-            if _cleaned and _cleaned not in BACKEND_CORS_ORIGINS:
-                BACKEND_CORS_ORIGINS.append(_cleaned)
+    _env_origins = os.getenv("BACKEND_CORS_ORIGINS")
+    if _env_origins:
+        BACKEND_CORS_ORIGINS: list[str] = [o.strip() for o in _env_origins.split(",") if o.strip()]
+    else:
+        BACKEND_CORS_ORIGINS: list[str] = [
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+        ]
 
 settings = Settings()
 
