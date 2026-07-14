@@ -1,0 +1,49 @@
+# Python virtual environment
+backend/venv/
+backend/.venv/
+venv/
+.venv/
+ENV/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+backend/finance.db
+finance.db
+
+# Node / Vue frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+node_modules/
+dist/
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+.project
+.classpath
+.settings/
+
+# Environment files (Secrets)
+.env
+.env.local
+.env.*.local
+*.env
+
+# Operating System files
+Thumbs.db
+.DS_Store
