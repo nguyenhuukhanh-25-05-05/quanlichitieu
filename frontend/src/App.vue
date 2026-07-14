@@ -305,6 +305,7 @@ import { useAuthStore } from './stores/auth';
 import { useNotificationStore } from './stores/notification';
 import SpotifyPlayer from './components/SpotifyPlayer.vue';
 import axios from 'axios';
+import api from './services/api';
 import { getLunarDate } from '@dqcai/vn-lunar';
 import { 
   Wallet, LayoutDashboard, History, ShieldAlert, 
@@ -427,7 +428,7 @@ const fetchWeather = async () => {
       (pos) => doFetch(pos.coords.latitude, pos.coords.longitude),
       async () => {
         try {
-          const ipRes = await axios.get('/ip-geo', { timeout: 5000 });
+          const ipRes = await api.get('/ip-geo', { timeout: 5000 });
           await doFetch(ipRes.data.lat, ipRes.data.lon);
         } catch {
           const lat = import.meta.env.VITE_DEFAULT_LAT || '10.8231';
