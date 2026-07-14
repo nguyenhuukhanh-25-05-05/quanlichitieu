@@ -268,7 +268,7 @@ import { useAuthStore } from '../stores/auth';
 import { useTransactionStore } from '../stores/transaction';
 import { useNotificationStore } from '../stores/notification';
 import LoadingSpinner from '../components/LoadingSpinner.vue';
-import { formatCurrency, formatOriginalAmount, formatDate } from '../utils/format';
+import { formatCurrency, formatOriginalAmount, formatDate, formatTime } from '../utils/format';
 import { useAmountInput } from '../composables/useAmountInput';
 import { categories, getCategoryClass } from '../utils/categories';
 import { defaultExchangeRates } from '../utils/constants';

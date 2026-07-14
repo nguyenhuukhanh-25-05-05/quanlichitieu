@@ -24,4 +24,12 @@ export function formatNumberWithDots(value) {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
+export function formatTime(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  const hours = String(d.getHours()).padStart(2, '0');
+  const mins = String(d.getMinutes()).padStart(2, '0');
+  return `${hours}:${mins}`;
+}
+
 

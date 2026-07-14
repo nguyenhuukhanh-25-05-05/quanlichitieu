@@ -171,6 +171,13 @@ const adding = ref(false);
 
 const expenseCategories = ['Ăn uống', 'Di chuyển', 'Mua sắm', 'Nhà cửa', 'Giải trí', 'Học tập', 'Y tế', 'Khác'];
 
+const getProgressColorClass = (percentUsed, isExceeded) => {
+  if (isExceeded) return 'bg-red-500';
+  if (percentUsed >= 80) return 'bg-amber-500';
+  if (percentUsed >= 50) return 'bg-blue-500';
+  return 'bg-emerald-500';
+};
+
 const form = reactive({
   category: 'Ăn uống',
   amount_limit: null,
