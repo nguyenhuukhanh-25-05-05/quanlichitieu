@@ -1,4 +1,5 @@
 import os
+import secrets
 
 class Settings:
     PROJECT_NAME: str = "AuraFinance API"
@@ -7,7 +8,21 @@ class Settings:
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
     
     # Security
-    SECRET_KEY: str = os.getenv("SECRET_KEY", "")
+    _key = os.getenv("SECRET_KEY", "")
+    if _key:
+        SECRET_KEY: str = _key
+    elif ENVIRONMENT == "production":
+        raise RuntimeError(
+            "CRITICAL: SECRET_KEY environment variable is not set! "
+            "A strong random SECRET_KEY is required for production."
+        )
+    else:
+        _generated = secrets.token_urlsafe(48)
+        SECRET_KEY: str = _generated
+        import logging
+        logging.getLogger(__name__).warning(
+            "SECRET_KEY not set, generated one for development: %s", _generated
+        )
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "1440"))
     
@@ -28,10 +43,3 @@ class Settings:
         ]
 
 settings = Settings()
-
-# Fail fast if SECRET_KEY is not set in production
-if settings.ENVIRONMENT == "production" and not settings.SECRET_KEY:
-    raise RuntimeError(
-        "CRITICAL: SECRET_KEY environment variable is not set! "
-        "A strong random SECRET_KEY is required for production."
-    )
